@@ -19,7 +19,7 @@ Then just ask:
 ## Plugins
 
 ### `collimer-scan`
-Runs a free [Collimer](https://collimer.com) AI-visibility scan against any website via the public API and reports how visible the brand is across **ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews** — a score (0–100), a confidence interval, the single biggest gap, and a branded report URL. The full report (share of voice per engine + every recommendation) unlocks with a free account.
+Runs a free [Collimer](https://collimer.com) AI-visibility scan against any website via the public API and reports how visible the brand is across **ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews** — a score (0–100), a confidence interval, the single biggest gap, and a branded report URL. The full ranked fix plan and verification re-scan unlock with a free account.
 
 **Prefer a raw tool?** The same scan is available as an MCP server: [`collimer-mcp`](https://github.com/sandcastlelabs/collimer-mcp) (`npx -y collimer-mcp`). The skill wraps that scan in a full interpret-and-recommend workflow; the MCP server is the bare tool.
 

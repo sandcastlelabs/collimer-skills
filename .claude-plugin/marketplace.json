@@ -5,14 +5,14 @@
     "url": "https://sandcastlelabs.ai"
   },
   "metadata": {
-    "description": "Agent skills for Collimer — AI-search visibility scans and GEO tooling.",
+    "description": "Agent skills for Collimer — scan AI-search visibility, get the ranked fix plan.",
     "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "collimer-scan",
       "source": "./plugins/collimer-scan",
-      "description": "Run a free Collimer AI-visibility scan on any website and report how visible a brand is across AI search engines (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews).",
+      "description": "Run a free Collimer AI-visibility scan on any website (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) — get the score, top findings, and the path to a full ranked fix plan.",
       "version": "0.1.0",
       "author": { "name": "Sandcastle Labs", "url": "https://sandcastlelabs.ai" },
       "homepage": "https://collimer.com",

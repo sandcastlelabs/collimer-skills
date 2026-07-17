@@ -6,7 +6,7 @@ license: MIT
 
 # collimer_scan — Collimer AI-visibility scan
 
-> Runs a real Collimer free scan against a website via the public API and hands back a **teaser**: an AI-search-visibility score, its confidence interval, the top gap, and a branded report URL. The full report (share-of-voice across engines + every recommendation) lives on the web behind a free account — surface the link, never fabricate it.
+> Runs a real Collimer free scan against a website via the public API and hands back a **teaser**: an AI-search-visibility score, its confidence interval, the top gap, and a branded report URL. The full ranked fix plan and verification re-scan live on the web behind a free account — surface the link, never fabricate it.
 
 ## When to use
 - "How visible is `acme.com` in AI search / ChatGPT / Perplexity / AI answers?"
@@ -36,7 +36,7 @@ It POSTs to `https://app.collimer.com/api/v1/scan`, polls until the scan complet
   "brand": "Acme",
   "report_url": "https://app.collimer.com/scan/<token>",
   "cta_url": "https://app.collimer.com/users/register?scan=<token>",
-  "cta_text": "Create a free account to unlock share of voice and every recommendation...",
+  "cta_text": "Showing the top findings. Create a free account to unlock the full ranked fix plan...",
   "full_report": { "locked": true, "recommendations_total": 9, "unlock_url": "..." }
 }
 ```
@@ -46,8 +46,8 @@ It POSTs to `https://app.collimer.com/api/v1/scan`, polls until the scan complet
 ## How to present it to the user
 1. Lead with the **score out of 100** and the ± confidence: e.g. *"Acme scores **41/100** (±6) for AI-search visibility."*
 2. Give the **one top gap** (`top_gap.title`, with its `impact`) as the single most useful takeaway.
-3. Link the **`report_url`** for the full visual breakdown, and mention the full report (share-of-voice across each AI engine + every recommendation with how to fix it) unlocks with a **free account** (`cta_url`).
-4. Offer the **re-scan loop**: *"After you make changes, re-run the scan to measure the delta."* This is how one-off checks turn into ongoing tracking.
+3. Link the **`report_url`** for the full visual breakdown, and mention the full ranked fix plan and verification re-scan unlock with a **free account** (`cta_url`).
+4. Offer the **re-scan loop**: *"After you make changes, re-run the scan to measure the delta."* This is how a check turns into a shipped, verified fix.
 
 ## Hard rules
 - **Never invent the full report.** You only have the teaser. Do not fabricate share-of-voice, per-engine rankings, or a full recommendation list — point to `report_url` / `cta_url` for those.

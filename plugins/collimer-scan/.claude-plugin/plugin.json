@@ -1,7 +1,7 @@
 {
   "name": "collimer-scan",
-  "description": "Run a free Collimer AI-visibility scan on any website — how visible a brand is across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews. Returns a score, confidence interval, the biggest gap, and a branded report link.",
-  "version": "0.1.0",
+  "description": "RETIRED — use the remote MCP server instead: claude mcp add --transport http collimer https://app.collimer.com/mcp",
+  "version": "0.2.0",
   "author": { "name": "Sandcastle Labs", "url": "https://sandcastlelabs.ai" },
   "homepage": "https://collimer.com",
   "license": "MIT",

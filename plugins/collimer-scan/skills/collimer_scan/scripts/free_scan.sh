@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 #
-# collimer_scan — run a Collimer free AI-visibility scan via the public API.
+# collimer_scan — RETIRED.
+#
+# This script called Collimer's ANONYMOUS free-scan API. That API now requires a
+# Collimer account, so every call here returns 401 and there is no version of
+# this script that can succeed. Collimer is a remote MCP server instead:
+#
+#   claude mcp add --transport http collimer https://app.collimer.com/mcp
+#
+# The 401 branches below carry that guidance in the message on purpose — a bare
+# "scan create failed, http_status 401" tells the caller nothing about the fix.
 #
 # Usage:   free_scan.sh <domain-or-url> [email]
 # Example: free_scan.sh acme.com
@@ -25,6 +34,9 @@ API="${COLLIMER_API_BASE:-https://app.collimer.com}"
 SOURCE="${COLLIMER_SCAN_SOURCE:-agent}"
 MAX_POLLS="${COLLIMER_MAX_POLLS:-60}"
 POLL_INTERVAL="${COLLIMER_POLL_INTERVAL:-5}"
+
+RETIRED_MSG='Collimer'"'"'s anonymous scan API has been retired, so this skill can no longer run a scan. Add Collimer as a remote MCP server instead: claude mcp add --transport http collimer https://app.collimer.com/mcp — your client will prompt you to sign in, and a free account is enough.'
+retired() { jq -nc --arg m "$RETIRED_MSG" '{error:"retired", message:$m, remote:"https://app.collimer.com/mcp"}' >&2; exit 1; }
 
 [ -n "$DOMAIN" ] || { echo '{"error":"usage: free_scan.sh <domain-or-url> [email]"}' >&2; exit 2; }
 command -v jq   >/dev/null 2>&1 || { echo '{"error":"jq is required"}' >&2; exit 2; }
@@ -52,6 +64,7 @@ create_body="$(printf '%s' "$create" | sed '$d')"
 
 case "$create_code" in
   200|201) : ;;
+  401) retired ;;
   *) printf '%s\n' "$create_body" >&2
      echo "{\"error\":\"scan create failed\",\"http_status\":${create_code}}" >&2
      exit 1 ;;
@@ -70,6 +83,7 @@ while [ "$i" -lt "$MAX_POLLS" ]; do
   case "$poll_code" in
     200) printf '%s\n' "$poll_body"; exit 0 ;;            # complete → teaser
     202) : ;;                                             # queued/running
+    401) retired ;;
     404) echo '{"error":"scan token not found"}' >&2; exit 1 ;;
     *)   echo "{\"error\":\"poll failed\",\"http_status\":${poll_code}}" >&2
          printf '%s\n' "$poll_body" >&2; exit 1 ;;

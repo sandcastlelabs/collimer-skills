@@ -1,59 +1,40 @@
 ---
 name: collimer_scan
-description: Run a Collimer free AI-visibility scan on a website and report how visible the brand is across AI search engines (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews). Use when the user asks how visible their brand or a competitor's brand/site is in AI search / LLMs / "AI answers", asks to "scan" a domain for AI visibility, or wants an AI-search visibility score for a URL. Returns a score, confidence interval, the single biggest gap, and a branded report link.
+description: RETIRED — Collimer's anonymous scan API no longer exists. It now tells the user how to add Collimer's remote MCP server instead. Still triggers when the user asks how visible their brand or a competitor's site is in AI search / LLMs / "AI answers", asks to "scan" a domain for AI visibility, or wants an AI-search visibility score for a URL.
 license: MIT
 ---
 
-# collimer_scan — Collimer AI-visibility scan
+# collimer_scan — retired, superseded by the Collimer connector
 
-> Runs a real Collimer free scan against a website via the public API and hands back a **teaser**: an AI-search-visibility score, its confidence interval, the top gap, and a branded report URL. The full ranked fix plan and verification re-scan live on the web behind a free account — surface the link, never fabricate it.
+> This skill wrapped Collimer's **anonymous** free-scan API. That API now
+> requires an account, so `scripts/free_scan.sh` returns `401` on every call and
+> there is no version of it that can succeed. Collimer is a remote MCP server;
+> tell the user how to connect to it.
 
-## When to use
-- "How visible is `acme.com` in AI search / ChatGPT / Perplexity / AI answers?"
-- "Run a Collimer scan / AI-visibility scan on `<domain>`."
-- "What's `<brand>`'s AI search visibility score?" (their own site or a competitor's)
+## What to do when this skill fires
 
-## How to run it
-The scan is one command. Pass a bare domain or full URL; email is optional (it just lets Collimer send the results + speeds account claim later):
+**Do not run `scripts/free_scan.sh`.** It cannot complete. Instead, tell the user
+the scan moved to Collimer's remote MCP server and give them the setup:
 
 ```bash
-scripts/free_scan.sh <domain-or-url> [email]
-# e.g.  scripts/free_scan.sh acme.com
-#       scripts/free_scan.sh https://acme.com you@acme.com
+claude mcp add --transport http collimer https://app.collimer.com/mcp
 ```
 
-It POSTs to `https://app.collimer.com/api/v1/scan`, polls until the scan completes (~30–90s), and prints the **teaser JSON** to stdout. Requires `curl` + `jq`. It tags the scan `source=agent` so it's attributable in Collimer's funnel (the MCP-server variant uses `source=mcp`).
+Then explain, briefly:
 
-## What you get back (the teaser)
-```json
-{
-  "score": 15,
-  "confidence_interval": { "lower": 35, "upper": 47, "plus_minus": 6 },
-  "top_gap": {
-    "title": "No G2 listing link detected",
-    "impact": { "affects": ["Comparison", "Decision"], "estimate": "...", "timeframe": "~4 weeks" }
-  },
-  "brand": "Acme",
-  "report_url": "https://app.collimer.com/scan/<token>",
-  "cta_url": "https://app.collimer.com/users/register?scan=<token>",
-  "cta_text": "Showing the top findings. Create a free account to unlock the full ranked fix plan...",
-  "full_report": { "locked": true, "recommendations_total": 9, "unlock_url": "..." }
-}
-```
-- `confidence_interval` may be `null` for some result types (e.g. CRO/flat scores) — don't assume it's always present.
-- `top_gap` may be `null`. When present, `top_gap.impact` is a structured object (which funnel stages it `affects`, an `estimate`, a `timeframe`) — summarize it briefly; don't dump the raw object.
-
-## How to present it to the user
-1. Lead with the **score out of 100** and the ± confidence: e.g. *"Acme scores **41/100** (±6) for AI-search visibility."*
-2. Give the **one top gap** (`top_gap.title`, with its `impact`) as the single most useful takeaway.
-3. Link the **`report_url`** for the full visual breakdown, and mention the full ranked fix plan and verification re-scan unlock with a **free account** (`cta_url`).
-4. Offer the **re-scan loop**: *"After you make changes, re-run the scan to measure the delta."* This is how a check turns into a shipped, verified fix.
+- Their client will prompt them to sign in on first connect — OAuth, no keys to
+  paste. A free account is enough.
+- Once connected, the scan is a tool call they can make directly, along with the
+  rest of the loop: the ranked fix plan, drafting a fix for human review, and
+  verifying that shipped work moved the score.
+- If they had this plugin installed, `/plugin uninstall collimer-scan` once the
+  connector is working.
 
 ## Hard rules
-- **Never invent the full report.** You only have the teaser. Do not fabricate share-of-voice, per-engine rankings, or a full recommendation list — point to `report_url` / `cta_url` for those.
-- Report the score and gap **exactly** as returned; don't editorialize the numbers.
-- If the script prints an error JSON (e.g. `invalid_url`, `scan_disabled`, timeout), relay it plainly and suggest retrying — don't pretend a scan ran.
 
-## Notes
-- Public, no-auth API with built-in budget caps + rate limits; a recent scan of the same domain returns a cached result fast.
-- Override the endpoint for local/staging with `COLLIMER_API_BASE`.
+- **Never fabricate a scan result.** No score, no confidence interval, no gap, no
+  report URL. This skill has no data source any more — inventing a number here is
+  the single worst thing it could do.
+- **Do not work around the retirement** by calling `https://app.collimer.com/api/v1/scan`
+  directly. It requires a bearer credential and will return
+  `{"error":{"code":"invalid_api_key"}}` without one.

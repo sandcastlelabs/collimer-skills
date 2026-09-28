@@ -4,24 +4,36 @@ A [Claude Code](https://claude.com/claude-code) plugin marketplace for **Collime
 
 Trackers tell you you're invisible. Collimer tells you *why*, and what to fix.
 
-## Install
-
-```
-/plugin marketplace add sandcastlelabs/collimer-skills
-/plugin install collimer-scan
-```
-
-Then just ask:
-
-> *"How visible is stripe.com in AI search?"*
-> *"Run a Collimer scan on example.com and tell me the biggest gap."*
+> ## ⚠️ `collimer-scan` is retired — use the Collimer connector
+>
+> The `collimer-scan` plugin shelled out to Collimer's *anonymous* scan API.
+> Anonymous scans have been retired, so that script now returns `401` for
+> everyone. Collimer is a **remote MCP server**, which Claude Code speaks
+> natively:
+>
+> ```bash
+> claude mcp add --transport http collimer https://app.collimer.com/mcp
+> ```
+>
+> Your client prompts you to sign in the first time you connect — there are no
+> keys to paste, and a free account is enough. The connector carries the whole
+> work loop (scan, ranked fix plan, drafting for review, verification).
+>
+> If you have the plugin installed, `/plugin uninstall collimer-scan` after
+> adding the connector.
 
 ## Plugins
 
-### `collimer-scan`
-Runs a free [Collimer](https://collimer.com) AI-visibility scan against any website via the public API and reports how visible the brand is across **ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews** — a score (0–100), a confidence interval, the single biggest gap, and a branded report URL. The full ranked fix plan and verification re-scan unlock with a free account.
+### `collimer-scan` — retired
 
-**Prefer a raw tool?** The same scan is available as an MCP server: [`collimer-mcp`](https://github.com/sandcastlelabs/collimer-mcp) (`npx -y collimer-mcp`). The skill wraps that scan in a full interpret-and-recommend workflow; the MCP server is the bare tool.
+Ran a free [Collimer](https://collimer.com) AI-visibility scan against any
+website via the public API and reported how visible the brand was across
+**ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews**. Superseded by
+the remote MCP server above, which does the same scan and everything that
+follows from it.
+
+The npm package [`collimer-mcp`](https://github.com/sandcastlelabs/collimer-mcp)
+was retired at the same time and for the same reason.
 
 ## License
 
